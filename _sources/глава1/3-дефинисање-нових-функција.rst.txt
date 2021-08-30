@@ -74,8 +74,14 @@
 
 Окружење у коме се одређени израз вреднује састоји се из низа *оквира* који су приказани као кутије. Сваки оквир садржи *везе*, при чему свака од њих повезује неко име са њему одговарајућом вредношћу. Постоји јединствен *глобални* оквир. Наредбе доделе и увоза додају нове уносе у први оквир тренутног окружења. Досад, окружење се састоји само из глобалног оквира.
 
+.. only:: latex
+
     >>> from math import pi
     >>> тау = 2 * pi
+
+.. raw:: html
+
+    <iframe width="800" height="262" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20math%20import%20pi%0A%D1%82%D0%B0%D1%83%20%3D%202%20*%20pi&codeDivHeight=400&codeDivWidth=350&cumulative=true&curInstr=2&origin=composingprograms.js&py=3&rawInputLstJSON=%5B%5D"> </iframe>
 
 Један овакав *дијаграм окружења* приказује везе тренутног окружења заједно са вредностима на које су имена повезана. Дијаграми окружења у овом тексту су интерактивни, односно могуће је ићи кроз линије краћих програма с леве стране да би се видело како се стање окружења развија с десне стране. Може се чак и кликнути на "Edit code in Online Python Tutor" везу да се пример учита у `Пајтон тутор <http://www.pythontutor.com/visualize.html>`_, алат који је направио `Филип Гуо <http://www.pgbovine.net>`_ за генерисање ових дијаграма окружења. Охрабрују се читаоци да унесу примере и простудирају тако добијене дијаграме окружења.
 
@@ -83,9 +89,15 @@
 
 Наредба ``def`` повезује име на кориснички дефинисану функцију створену путем дефиниције. Резултујуће окружење након увоза ``mul`` и ``квадрат`` дефиниције је приказано у наставку.
 
+.. only:: latex
+
     >>> from operator import mul
     >>> def квадрат(x):
     ...     return mul(x, x)
+
+.. raw:: html
+
+    <iframe width="800" height="300" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=2&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
 
 Свака функција је ред који почиње са ``func``, праћен именом функције и формалним параметрима. Уграђене функције као што су ``mul`` немају имена формалних параметара па су зато ``...`` искоришћене уместо истих.
 

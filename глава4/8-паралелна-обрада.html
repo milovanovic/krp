@@ -324,17 +324,7 @@
 <span id="id15"></span><h3>Застој<a class="headerlink" href="#deadlock" title="Permalink to this headline">¶</a></h3>
 <p>Будући да узрокују да нити или процеси чекају једни на друге, механизми синхронизације су подложни такозваном <em>застоју</em>, односно ситуацији у којој су две или више нити или процеса запели и чекају једни на друге да се заврше. Управо је приказано како занемаривање ослобађања браве може проузроковати заглављивање нити у недоглед. Међутим, чак и ако нити или процеси исправно ослобађају браве, и даље може доћи до програмског застоја.</p>
 <p>Извор застоја је <em>кружно чекање</em>, приказано у наставку над процесима. Ниједан процес се не може наставити јер чека на друге процесе који и сами чекају да се он сам заврши.</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal">[-&gt;,&gt;=stealth,shorten &gt;=1pt,auto,node distance=4cm,semithick]
-\node[state, minimum size=3cm]                                 (q0) {Процес А};
-\node[state, below right of=q0, yshift=-1cm, minimum size=3cm] (q2) {Процес В};
-\node[state, above right of=q2, yshift=1cm, minimum size=3cm]  (q1) {Процес Б};
-\path [thick]
-    (q0) edge [bend left] node [above] {чека на} (q1)
-    (q1) edge [bend left] node [right] {чека на} (q2)
-    (q2) edge [bend left] node [left]  {чека на} (q0);</span>)</p>
-<p>!pdflatex command cannot be run</p>
-</div>
+<div class="figure" style="text-align: center"><p><img  src="../_images/tikz-d3715b4e71401c10fe8007bf5444525d5d0b1fb8.svg" alt="Figure made with TikZ" /></p>
 </div><p>Као пример, биће направљен застој два процеса. Претпоставимо да процеси деле дуплекс цев и покушавају да комуницирају један са другим на следећи начин:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">застој</span><span class="p">(</span><span class="n">улазнаЦев</span><span class="p">,</span> <span class="n">излазнаЦев</span><span class="p">):</span>
     <span class="n">ставка</span> <span class="o">=</span> <span class="n">улазнаЦев</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
