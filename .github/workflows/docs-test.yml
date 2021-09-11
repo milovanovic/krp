@@ -1,0 +1,21 @@
+name: Test docs
+
+on:
+  pull_request:
+     branches:
+       - master
+
+jobs:
+  test-docs:
+    name: Test documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Sphinx
+        run: |
+          sudo apt update -y &&
+          sudo python3 -m pip install -U pip
+          sudo python3 -m pip install Sphinx=~4.0 Pillow
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - name: Run doctest
+        run: sphinx-build -b doctest . ../build/doctest

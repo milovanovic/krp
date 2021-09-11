@@ -1,0 +1,137 @@
+name: Build docs
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'krp-*'
+      - '!krp-*-snapshot'
+
+jobs:
+  publish-release:
+    name: Build and publish HTML pages and PDF
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up environment
+        run: |
+          if echo ${{ github.ref }} | grep -q 'refs/heads'; then
+            GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)
+            TAG_NAME=krp-$GITHUB_SHA_SHORT-snapshot
+            BASE_NAME=KRP-$GITHUB_SHA_SHORT-snapshot
+            RELEASE_NAME="KRP-$GITHUB_SHA_SHORT Snapshot"
+            PRERELEASE=true
+          else
+            KRP_VERSION=$(echo ${{ github.ref }} | sed -r 's/.*\/[^[:digit:]]*(.*)/\1/')
+            TAG_NAME=$(basename ${{ github.ref }})
+            BASE_NAME=KRP-$KRP_VERSION
+            RELEASE_NAME="KRP $KRP_VERSION"
+            PRERELEASE=false
+          fi
+
+          PDF_NAME=$BASE_NAME.pdf
+          PDF_PATH=../build/latex/$PDF_NAME
+          PDF_URL=https://github.com/${{ github.repository }}/releases/download/$TAG_NAME/$PDF_NAME
+          HTML_DIR_NAME=$BASE_NAME-html
+          HTML_PATH=../build/release/$HTML_DIR_NAME.zip
+          HTML_URL=https://github.com/${{ github.repository }}/releases/download/$TAG_NAME/$HTML_DIR_NAME.zip
+          EPUB_NAME=$BASE_NAME.epub
+          EPUB_PATH=../build/epub/$EPUB_NAME
+          EPUB_URL=https://github.com/${{ github.repository }}/releases/download/$TAG_NAME/$EPUB_NAME
+
+          echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT" >> $GITHUB_ENV
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          echo "BASE_NAME=$BASE_NAME" >> $GITHUB_ENV
+          echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
+          echo "PRERELEASE=$PRERELEASE" >> $GITHUB_ENV
+          echo "PDF_NAME=$PDF_NAME" >> $GITHUB_ENV
+          echo "PDF_PATH=$PDF_PATH" >> $GITHUB_ENV
+          echo "PDF_URL=$PDF_URL" >> $GITHUB_ENV
+          echo "HTML_DIR_NAME=$HTML_DIR_NAME" >> $GITHUB_ENV
+          echo "HTML_PATH=$HTML_PATH" >> $GITHUB_ENV
+          echo "HTML_URL=$HTML_URL" >> $GITHUB_ENV
+          echo "EPUB_NAME=$EPUB_NAME" >> $GITHUB_ENV
+          echo "EPUB_PATH=$EPUB_PATH" >> $GITHUB_ENV
+          echo "EPUB_URL=$EPUB_URL" >> $GITHUB_ENV
+      - name: Install Sphinx
+        run: |
+          sudo apt update -y &&
+          sudo python3 -m pip install -U pip &&
+          sudo python3 -m pip install Sphinx~=4.0 Pillow
+      - name: Check out repo
+        uses: actions/checkout@v1
+#       - name: Run doctest
+#         run: sphinx-build -b doctest . ../build/doctest
+      - name: Install Sphinx-TikZ & TeX Live
+        run: |
+          sudo python3 -m pip install sphinxcontrib-tikz &&
+          sudo apt install -y --no-install-recommends latexmk pdf2svg ghostscript lmodern cm-super texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-cyrillic latex-cjk-chinese latex-cjk-chinese-arphic-gbsn00lp
+      - name: Generate LaTeX documentation
+        run: sphinx-build -b latex . ../build/latex
+      - name: Generate HTML documentation
+        run: sphinx-build -b html . ../build/html
+      - name: Generate ePub documentation
+        run: sphinx-build -b epub . ../build/epub
+      - name: Patch LaTeX documentation
+        run: |
+          # Cyrillic URL & centered title page
+          # cp LaTeXcustom/sphinx.sty LaTeXcustom/sphinxmanual.cls ../build/latex # Sphinx 3.5
+          cp LaTeXcustom/sphinxlatexliterals.sty LaTeXcustom/sphinxmanual.cls ../build/latex # Sphinx 4.1
+          # Resize image on title page
+          sed -i -r 's/(\\newcommand\{\\sphinxlogo\}\{\\sphinxincludegraphics)\{/\1[width=158pt]{/' ../build/latex/КРП.tex
+          # Remove chapter numbering from preface and literature
+          sed -i -r 's/\\chapter\{Предговор\}/\\chapter*{Предговор}\n\\addcontentsline{toc}{chapter}{Предговор}\n\\markboth{Предговор}{Предговор}/' ../build/latex/КРП.tex
+          sed -i -r 's/\\chapter\{Литература\}/\\chapter*{Литература}\n\\addcontentsline{toc}{chapter}{Литература}\n\\markboth{Литература}{Литература}/' ../build/latex/КРП.tex
+      - name: Generate PDF from LaTeX
+        run: make --directory=../build/latex
+      - name: Commit output HTML docs to gh-pages branch
+        run: |
+          # Copy docs to working dir after switching to gh-pages branch
+          git switch gh-pages 2>/dev/null || git switch -c gh-pages
+          git clean -fd
+          rm -rf * && cp -r ../build/html/* ./
+          
+          # Create No Jekyll - not necessary if you use sphinx.ext.githubpages
+          # touch .nojekyll # delete in the next iteration
+          
+          # Commit
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git commit -m "Update docs" -a || :
+      - name: Push HTML docs
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare release
+        run: |
+          mkdir ../build/release
+          
+          # Rename PDF file
+          mv ../build/latex/КРП.pdf "../build/latex/$PDF_NAME"
+          
+          # Zip html files
+          mv ../build/html "../build/$HTML_DIR_NAME"
+          (cd ../build && zip -r "release/$HTML_DIR_NAME.zip" "$HTML_DIR_NAME")
+          
+          # Rename ePub file
+          mv ../build/epub/sphinx.epub "../build/epub/$EPUB_NAME"
+          
+          cat > ../build/release/body.txt <<- EOF
+          | Назив датотеке | Опис | Величина | SHA256 |
+          | -------------- | ---- | -------- | ------ |
+          | [$PDF_NAME]($PDF_URL) | Издање књиге у PDF формату | $(du -h $PDF_PATH | awk '{ print $1 }') | $(sha256sum $PDF_PATH | awk '{print $1}') |
+          | [$HTML_DIR_NAME.zip]($HTML_URL) | Издање књиге у облику HTML документације | $(du -h $HTML_PATH | awk '{ print $1 }') | $(sha256sum $HTML_PATH | awk '{print $1}') |
+          | [$EPUB_NAME]($EPUB_URL) | Издање књиге у ePub формату | $(du -h $EPUB_PATH | awk '{ print $1 }') | $(sha256sum $EPUB_PATH | awk '{print $1}') |
+          EOF
+      - name: Publish release
+        uses: ncipollo/release-action@v1.8.6
+        with:
+          artifacts: ${{ env.PDF_PATH }},${{ env.HTML_PATH }},${{ env.EPUB_PATH }}
+          commit: ${{ github.sha }}
+          name: ${{ env.RELEASE_NAME }}
+          bodyFile: ../build/release/body.txt
+          tag: ${{ env.TAG_NAME }}
+          prerelease: ${{ env.PRERELEASE }}
+          token: ${{ secrets.GITHUB_TOKEN }}
