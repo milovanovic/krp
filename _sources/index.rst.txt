@@ -8,6 +8,8 @@
 
 Основни универзитетски уџбеник из основа програмирања у Пајтон програмском језику.
 
+
+
 Добро дошли у основе програмирања!
 ==================================
 
@@ -24,10 +26,14 @@
    литература/литература.rst
 .. литература/index.rst
 
-
 .. Indices and tables
 .. ==================
 .. 
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 .. * :ref:`search`
+
+.. image:: https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-sa.svg
+    :align: center
+
+Нека права задржана. Ово дело обjављено jе под условима Криjеjтив комонс Ауторство-делити под истим условима 4.0 међународне лиценце (енг. `Creative Commons Attribution-ShareAlike 4.0 International License <http://creativecommons.org/licenses/by-sa/4.0>`_).
