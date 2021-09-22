@@ -74,7 +74,7 @@
 
 Окружење у коме се одређени израз вреднује састоји се из низа *оквира* који су приказани као кутије. Сваки оквир садржи *везе*, при чему свака од њих повезује неко име са њему одговарајућом вредношћу. Постоји јединствен *глобални* оквир. Наредбе доделе и увоза додају нове уносе у први оквир тренутног окружења. Досад, окружење се састоји само из глобалног оквира.
 
-.. only:: latex
+.. only:: not html
 
     >>> from math import pi
     >>> тау = 2 * pi
@@ -89,7 +89,7 @@
 
 Наредба ``def`` повезује име на кориснички дефинисану функцију створену путем дефиниције. Резултујуће окружење након увоза ``mul`` и ``квадрат`` дефиниције је приказано у наставку.
 
-.. only:: latex
+.. only:: not html
 
     >>> from operator import mul
     >>> def квадрат(x):
@@ -105,10 +105,16 @@
 
 Име везано на функцију у оквиру је оно које се користи током вредновања. Својствено име функције не игра улогу у вредновању. Може се видети у доњем примеру да једном када се назив ``max`` веже на вредност 3, не може се више користити као функција.
 
+.. only:: not html
+
     >>> f = max
     >>> max = 3
     >>> result = f(2, 3, 4)
     >>> #max(1, 2)  # проузрокује грешку
+
+.. raw:: html
+
+    <iframe width="800" height="310" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=f%20%3D%20max%0Amax%20%3D%203%0Aresult%20%3D%20f%282,%203,%204%29%0Amax%281,%202%29%20%20%23%20%D0%BF%D1%80%D0%BE%D1%83%D0%B7%D1%80%D0%BE%D0%BA%D1%83%D1%98%D0%B5%20%D0%B3%D1%80%D0%B5%D1%88%D0%BA%D1%83&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=2&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
 
 Порука о грешци ``TypeError: 'int' object is not callable`` даје обавештење да име ``max`` (тренутно повезано на број 3) представља целобројну вредност, а не функцију. Стога, не може се користити као оператор у позивном изразу.
 
@@ -138,19 +144,37 @@
 
 Како би се један пример детаљно илустровао, треба исцртати неколико корака у дијаграму окружења једног примера. Након извршења прве наредбе увоза, само је име ``mul`` повезано у глобалном оквиру.
 
+.. only:: not html
+
     >>> from operator import mul
     >>> def квадрат(x):
     ...     return mul(x, x)
     >>> квадрат(-2)
     4
 
+.. raw:: html
+
+    <iframe width="800" height="310" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28-2%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=1&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
+
 Најпре, наредба дефинисања функције ``квадрат`` је извршена. Треба приметити да се целокупна ``def`` наредба обрађује у једном кораку. Тело функције се не извршава приликом дефиниције функције, све док функција не буде позвана.
+
+.. raw:: html
+
+    <iframe width="800" height="310" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28-2%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=2&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
 
 Следеће, функција ``квадрат`` је позвана са аргументом ``-2`` па се ствара нови оквир с формалним параметром ``x`` повезаним на вредност ``-2``.
 
+.. raw:: html
+
+    <iframe width="800" height="310" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28-2%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=3&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
+
 Затим, име ``x`` се тражи у тренутном окружењу које се састоји из два оквира. У овом случају ``x`` се вреднује у ``-2`` и тако функција ``квадрат`` враћа 4.
 
-.. The "Return value" in the square() frame is not a name binding; instead it indicates the value returned by the function call that created the frame.
+.. raw:: html
+
+    <iframe width="800" height="310" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28-2%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=5&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
+
+Повратна вредност у оквиру ``квадрат()`` функције није везивање имена, већ уместо тога означава вредност коју враћа позив функције која је створила тај оквир.
 
 Чак и у овом једноставном примеру, два различита окружења су коришћена. Израз ``квадрат(-2)`` из највишег нивоа се вреднује у глобалном окружењу док је повратни израз ``mul(x, x)`` вреднован у окружењу направљеном позивом ``квадрат`` функције. Оба имена и ``x`` и ``mul`` су повезана у овом окружењу, али у различитим оквирима.
 
@@ -172,19 +196,27 @@
 
 Размотримо изнова исте две једноставне дефиниције функција које илуструју поступак вредновања позивног израза кориснички дефинисане функције.
 
+.. only:: not html
+
     >>> from operator import add, mul
     >>> def квадрат(x):
     ...     return mul(x, x)
-
     >>> def збирКвадрата(x, y):
     ...     return add(квадрат(x), квадрат(y))
-
-    >>> збирКвадрата(5, 12)
+    >>> print(збирКвадрата(5, 12))
     169
+
+.. raw:: html
+
+    <iframe width="800" height="410" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20add,%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%0Adef%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%28x,%20y%29%3A%0A%20%20%20%20return%20add%28%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29,%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28y%29%29%0A%0A%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%82%D0%B0%D1%82%20%3D%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%285,%2012%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=3&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
 
 Пајтон најпре вреднује име ``збирКвадрата`` које је везано на кориснички дефинисану функцију у глобалном оквиру. Примитивни бројевни изрази 5 и 12 вреднују се у бројеве које представљају.
 
 Даље, Пајтон примењује ``збирКвадрата`` што уводи и локални оквир који повезује ``x`` на 5 и ``y`` на 12.
+
+.. raw:: html
+
+    <iframe width="800" height="410" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20add,%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%0Adef%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%28x,%20y%29%3A%0A%20%20%20%20return%20add%28%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29,%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28y%29%29%0A%0A%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%82%D0%B0%D1%82%20%3D%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%285,%2012%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=4&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
 
 Тело функције ``збирКвадрата`` садржи овај позивни израз::
 
@@ -196,11 +228,23 @@
 
 У ``операнд0``, име ``квадрат`` је кориснички дефинисана функција у глобалном оквиру, док је ``x`` име броја 5 у локалном оквиру. Пајтон примењује функцију ``квадрат`` на 5 уводећи још један локални оквир који повезује ``x`` на 5.
 
+.. raw:: html
+
+    <iframe width="800" height="450" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20add,%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%0Adef%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%28x,%20y%29%3A%0A%20%20%20%20return%20add%28%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29,%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28y%29%29%0A%0A%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%82%D0%B0%D1%82%20%3D%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%285,%2012%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=6&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
+
 Користећи ово окружење, израз ``mul(x, x)`` се вреднује у 25.
 
 Поступак вредновања сада прелази на ``операнд1`` за који ``y`` именује број 12. Пајтон вреднује тело функције ``квадрат`` поново, овога пута уводећи још један локални оквир који повезује ``x`` на 12. Стога, ``операнд1`` се вреднује у 144.
 
+.. raw:: html
+
+    <iframe width="800" height="480" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20add,%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%0Adef%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%28x,%20y%29%3A%0A%20%20%20%20return%20add%28%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29,%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28y%29%29%0A%0A%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%82%D0%B0%D1%82%20%3D%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%285,%2012%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=11&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
+
 Коначно, примењујући сабирање на аргументима 25 и 144 доноси крајњу повратну вредност за ``збирКвадрата``: 169.
+
+.. raw:: html
+
+    <iframe width="800" height="410" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=from%20operator%20import%20add,%20mul%0Adef%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29%3A%0A%20%20%20%20return%20mul%28x,%20x%29%0A%0Adef%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%28x,%20y%29%3A%0A%20%20%20%20return%20add%28%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28x%29,%20%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%28y%29%29%0A%0A%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%82%D0%B0%D1%82%20%3D%20%D0%B7%D0%B1%D0%B8%D1%80%D0%9A%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B0%285,%2012%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=13&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"> </iframe>
 
 Овај пример илуструје много темељних идеја које су до сада развијене. Имена су повезана на вредности које су расподељене преко више независних локалних оквира упоредо са јединственим глобалним оквиром који садржи дељена имена. Нови локални оквир се уводи сваки пут када је функција позвана, чак и ако се иста функција позива двапут.
 
